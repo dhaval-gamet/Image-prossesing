@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+static/uploads/*
+!static/uploads/.gitkeep
+app.log
+output.json
+output.xlsx
+.env
