@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Text & Table Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .result img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .download-links {
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Text & Table Extractor</h1>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".jpg,.jpeg,.png" required>
+            <button type="submit">Upload & Process</button>
+        </form>
+        
+        {% if tesseract_text or easyocr_text or table_html %}
+            <div class="result">
+                <h2>Results</h2>
+                {% if image_url %}
+                    <h3>Uploaded Image</h3>
+                    <img src="{{ image_url }}" alt="Uploaded Image">
+                {% endif %}
+                
+                {% if tesseract_text %}
+                    <h3>Tesseract Extracted Text</h3>
+                    <pre>{{ tesseract_text }}</pre>
+                {% endif %}
+                
+                {% if easyocr_text %}
+                    <h3>EasyOCR Extracted Text</h3>
+                    <pre>{{ easyocr_text }}</pre>
+                {% endif %}
+                
+                {% if table_html %}
+                    <h3>Extracted Table</h3>
+                    {{ table_html | safe }}
+                {% endif %}
+                
+                <div class="download-links">
+                    {% if json_url %}
+                        <p><a href="{{ json_url }}" download>Download JSON Output</a></p>
+                    {% endif %}
+                    {% if excel_url %}
+                        <p><a href="{{ excel_url }}" download>Download Excel Output</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
