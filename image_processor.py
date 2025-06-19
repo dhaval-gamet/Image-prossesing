@@ -12,6 +12,9 @@ import os
 logging.basicConfig(filename='app.log', level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Tesseract पाथ (Render के लिए)
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+
 # EasyOCR रीडर (सिंगलटॉन)
 reader = None
 def get_easyocr_reader():
@@ -28,7 +31,6 @@ def preprocess_image(image):
         gray = cv2.equalizeHist(gray)
         thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
                                       cv2.THRESH_BINARY, 11, 2)
-        # Skew Correction
         coords = np.column_stack(np.where(thresh > 0))
         angle = cv2.minAreaRect(coords)[-1]
         if angle < -45:
@@ -122,7 +124,6 @@ def process_image(image_path, output_dir='static/uploads'):
         tesseract_table_df = extract_table_tesseract(processed_img)
         easyocr_text = extract_text_easyocr(image_path)
         
-        # आउटपुट फाइल्स
         json_output = {
             "tesseract_text": tesseract_text,
             "easyocr_text": easyocr_text,
