@@ -12,7 +12,7 @@ UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# फोल्डर बनाएं अगर नहीं है
+# फोल्डर बनाएं
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -34,13 +34,11 @@ def index():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
             
-            # इमेज प्रोसेस करें
             tesseract_text, easyocr_text, table_df, json_path, excel_path = process_image(file_path)
             
             if tesseract_text is None:
                 return render_template('index.html', error='Error processing image')
             
-            # टेबल को HTML के लिए कन्वर्ट करें
             table_html = table_df.to_html(index=False) if table_df is not None else None
             
             return render_template('index.html',
@@ -58,4 +56,5 @@ def download_file(filename):
     return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename), as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
