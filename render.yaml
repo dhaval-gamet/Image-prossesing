@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: image-prossesing
+    env: python
+    plan: free
+    branch: main
+    buildCommand: |
+      apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-hin libjpeg-dev zlib1g-dev libpng-dev
+      pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
